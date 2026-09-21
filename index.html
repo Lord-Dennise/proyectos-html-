@@ -141,10 +141,10 @@
     <script>
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x000000, 0.012);
+        scene.fog = new THREE.FogExp2(0x000000, 0.010);
 
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 12, 32);
+        camera.position.set(0, 10, 28);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -154,155 +154,167 @@
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.maxDistance = 70;
-        controls.minDistance = 4;
+        controls.maxDistance = 60;
+        controls.minDistance = 3;
 
-        // Luces
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+        // Luz ambiental suave
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
         scene.add(ambientLight);
 
-        // Grupo central (Planeta con Anillo estilo agujero negro/galaxia)
+        // Grupo central (Planeta tipo Agujero Negro con Anillo Luminoso Amarillo/Dorado)
         const centralGroup = new THREE.Group();
         scene.add(centralGroup);
 
-        const planetGeometry = new THREE.SphereGeometry(2.8, 32, 32);
-        const planetMaterial = new THREE.MeshStandardMaterial({
-            color: 0x050505,
-            emissive: 0xff3333,
-            emissiveIntensity: 0.9,
-            roughness: 0.3,
-            metalness: 0.9
-        });
+        const planetGeometry = new THREE.SphereGeometry(2.2, 32, 32);
+        const planetMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
         const centralPlanet = new THREE.Mesh(planetGeometry, planetMaterial);
         centralGroup.add(centralPlanet);
 
-        const atmosGeometry = new THREE.SphereGeometry(3.3, 32, 32);
-        const atmosMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff4d4d,
-            transparent: true,
-            opacity: 0.2,
-            side: THREE.BackSide
-        });
-        const atmosphere = new THREE.Mesh(atmosGeometry, atmosMaterial);
-        centralGroup.add(atmosphere);
-
-        const ringGeometry = new THREE.RingGeometry(3.8, 5.5, 64);
-        ringGeometry.rotateX(Math.PI / 2.5);
+        // Anillo brillante central
+        const ringGeometry = new THREE.RingGeometry(2.5, 4.2, 64);
+        ringGeometry.rotateX(Math.PI / 2.2);
         const ringMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff6666,
+            color: 0xffcc00,
             side: THREE.DoubleSide,
             transparent: true,
-            opacity: 0.6
+            opacity: 0.9
         });
         const planetRing = new THREE.Mesh(ringGeometry, ringMaterial);
         centralGroup.add(planetRing);
 
-        // Carga de textura externa mediante TextureLoader
+        // Esplendor/Corona alrededor del núcleo
+        const glowGeometry = new THREE.SphereGeometry(2.6, 32, 32);
+        const glowMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffaa00,
+            transparent: true,
+            opacity: 0.35,
+            side: THREE.BackSide
+        });
+        const coreGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+        centralGroup.add(coreGlow);
+
+        // Generador dinámico para limpiar el fondo cuadrado de la imagen y dejarla redonda y limpia
         const textureLoader = new THREE.TextureLoader();
-        const bouquetTextureUrl = 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=256&q=80';
+        textureLoader.crossOrigin = "anonymous";
         
         const galaxyGroup = new THREE.Group();
         scene.add(galaxyGroup);
 
-        textureLoader.load(bouquetTextureUrl, (texture) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=256&q=80';
+        
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+
+            // Crear máscara circular perfecta para eliminar bordes cuadrados
+            ctx.beginPath();
+            ctx.arc(128, 128, 120, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(img, 0, 0, 256, 256);
+
+            // Añadir un borde dorado elegante al ramo
+            ctx.strokeStyle = '#ffea57';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.arc(128, 128, 116, 0, Math.PI * 2);
+            ctx.stroke();
+
+            const circularTexture = new THREE.CanvasTexture(canvas);
             const bouquetMaterial = new THREE.SpriteMaterial({ 
-                map: texture, 
-                transparent: true,
-                depthWrite: false
+                map: circularTexture, 
+                transparent: true
             });
 
-            // Distribuir ramos en forma de espiral galáctica
-            const totalBouquets = 40;
+            // Distribuir ramos en espiral galáctica limpia
+            const totalBouquets = 45;
             for (let i = 0; i < totalBouquets; i++) {
-                const angle = i * 0.45;
-                const radius = 5.5 + (i * 0.4);
+                const angle = i * 0.4;
+                const radius = 5 + (i * 0.35);
                 const x = Math.cos(angle) * radius;
                 const z = Math.sin(angle) * radius;
-                const y = (Math.random() - 0.5) * 6;
+                const y = (Math.random() - 0.5) * 5;
 
                 const sprite = new THREE.Sprite(bouquetMaterial);
-                sprite.scale.set(3.2, 3.2, 1);
+                sprite.scale.set(2.6, 2.6, 1);
                 sprite.position.set(x, y, z);
                 galaxyGroup.add(sprite);
             }
-        });
+        };
 
-        // Estrellas de fondo blancas y amarillas
-        function createCircularDotTexture(color) {
+        // Estrellas de fondo circulares y brillantes
+        function createDotTexture(color) {
             const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
+            canvas.width = 32;
+            canvas.height = 32;
             const ctx = canvas.getContext('2d');
-            const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+            const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
             gradient.addColorStop(0, color);
-            gradient.addColorStop(0.5, color);
+            gradient.addColorStop(0.4, color);
             gradient.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = gradient;
             ctx.beginPath();
-            ctx.arc(32, 32, 32, 0, Math.PI * 2);
+            ctx.arc(16, 16, 16, 0, Math.PI * 2);
             ctx.fill();
             return new THREE.CanvasTexture(canvas);
         }
 
-        const starsGeometry = new THREE.BufferGeometry();
-        const starsCount = 600;
-        const starPositions = new Float32Array(starsCount * 3);
-        for(let i = 0; i < starsCount * 3; i += 3) {
-            starPositions[i] = (Math.random() - 0.5) * 200;
-            starPositions[i+1] = (Math.random() - 0.5) * 200;
-            starPositions[i+2] = (Math.random() - 0.5) * 200;
-        }
-        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        scene.add(new THREE.Points(starsGeometry, new THREE.PointsMaterial({ color: 0xffffff, size: 1.2, map: createCircularDotTexture('#ffffff'), transparent: true, opacity: 0.7, depthWrite: false })));
-
         const yellowStarsGeo = new THREE.BufferGeometry();
-        const yellowStarsCount = 1500;
-        const yellowPos = new Float32Array(yellowStarsCount * 3);
-        for(let i = 0; i < yellowStarsCount * 3; i += 3) {
-            yellowPos[i] = (Math.random() - 0.5) * 180;
-            yellowPos[i+1] = (Math.random() - 0.5) * 180;
-            yellowPos[i+2] = (Math.random() - 0.5) * 180;
+        const count = 1800;
+        const positions = new Float32Array(count * 3);
+        for(let i = 0; i < count * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 160;
+            positions[i+1] = (Math.random() - 0.5) * 160;
+            positions[i+2] = (Math.random() - 0.5) * 160;
         }
-        yellowStarsGeo.setAttribute('position', new THREE.BufferAttribute(yellowPos, 3));
-        scene.add(new THREE.Points(yellowStarsGeo, new THREE.PointsMaterial({ color: 0xffea57, size: 1.8, map: createCircularDotTexture('#ffea57'), transparent: true, opacity: 0.95, depthWrite: false })));
+        yellowStarsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        scene.add(new THREE.Points(yellowStarsGeo, new THREE.PointsMaterial({ 
+            color: 0xffea57, 
+            size: 1.5, 
+            map: createDotTexture('#ffea57'), 
+            transparent: true, 
+            opacity: 0.9, 
+            depthWrite: false 
+        })));
 
-        // Palabras flotantes estilizadas
+        // Palabras flotantes románticas
         const words = [
-            "Mi destino", "Mi sol", "Brillas", "Mi flor", "Contigo", "Eternidad", 
-            "Libertad", "Esperanza", "Reina", "Mi calma", "Felicidad", "Pasión", 
-            "Te amo", "Mi universo", "Sueños", "Mi razón", "Tierna", "Amor", "Mi cielo"
+            "Mi sol", "Te amo", "Eternidad", "Mi vida", "Preciosa", "Sonrisa", 
+            "Luz", "Amor", "Destino", "Felicidad", "Mi flor", "Siempre juntos"
         ];
 
-        function createTextSprite(text, isHighlight) {
+        function createTextSprite(text) {
             const canvas = document.createElement('canvas');
             canvas.width = 256;
             canvas.height = 64;
             const context = canvas.getContext('2d');
             context.font = 'bold 20px Poppins, sans-serif';
-            context.fillStyle = isHighlight ? '#ff6666' : '#fff3b0';
+            context.fillStyle = '#fff3b0';
             context.textAlign = 'center';
             context.textBaseline = 'middle';
-            context.shadowColor = isHighlight ? '#ff3333' : '#ffcc00';
-            context.shadowBlur = 8;
+            context.shadowColor = '#ffcc00';
+            context.shadowBlur = 10;
             context.fillText(text, 128, 32);
 
             const texture = new THREE.CanvasTexture(canvas);
             const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
             const sprite = new THREE.Sprite(material);
-            sprite.scale.set(4, 1, 1);
+            sprite.scale.set(3.8, 1, 1);
             return sprite;
         }
 
-        for(let i = 0; i < 18; i++) {
-            const angle = (i / 18) * Math.PI * 2 + 0.3;
-            const radius = 7.5 + Math.random() * 13;
+        for(let i = 0; i < 20; i++) {
+            const angle = (i / 20) * Math.PI * 2;
+            const radius = 6 + Math.random() * 12;
             const x = Math.cos(angle) * radius;
             const z = Math.sin(angle) * radius;
-            const y = (Math.random() - 0.5) * 6;
+            const y = (Math.random() - 0.5) * 5;
 
             const word = words[Math.floor(Math.random() * words.length)];
-            const isHighlight = Math.random() < 0.25;
-            const sprite = createTextSprite(word, isHighlight);
+            const sprite = createTextSprite(word);
             sprite.position.set(x, y, z);
             galaxyGroup.add(sprite);
         }
@@ -329,15 +341,15 @@
             if (e.target === modalOverlay) modalOverlay.classList.remove('active');
         });
 
-        // Animación
+        // Animación fluida
         const clock = new THREE.Clock();
         function animate() {
             requestAnimationFrame(animate);
             const elapsedTime = clock.getElapsedTime();
 
-            galaxyGroup.rotation.y = elapsedTime * 0.04;
-            centralGroup.rotation.y = elapsedTime * 0.08;
-            planetRing.rotation.z = elapsedTime * 0.05;
+            galaxyGroup.rotation.y = elapsedTime * 0.03;
+            centralGroup.rotation.y = elapsedTime * 0.06;
+            planetRing.rotation.z = elapsedTime * 0.04;
 
             controls.update();
             renderer.render(scene, camera);
