@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feliz Día de las Flores Amarillas</title>
+    <title>Galaxia de Flores Hermosas</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -40,9 +40,9 @@
             z-index: 10;
             pointer-events: none;
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 1px;
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            color: rgba(255, 234, 87, 0.7);
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(255, 234, 87, 0.4);
         }
 
         /* Carta Romántica Modal */
@@ -52,14 +52,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.88);
+            background: rgba(0, 0, 0, 0.95);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 100;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease;
         }
 
         .modal-overlay.active {
@@ -68,16 +68,16 @@
         }
 
         .modal-card {
-            background: #110505;
-            border: 2px solid #ff4d4d;
-            border-radius: 16px;
-            padding: 35px 45px;
+            background: linear-gradient(145deg, #1e1111, #2d1919);
+            border: 2px solid #ffea57;
+            border-radius: 30px;
+            padding: 50px 60px;
             width: 90%;
-            max-width: 460px;
+            max-width: 550px;
             text-align: center;
-            box-shadow: 0 0 40px rgba(255, 77, 77, 0.4);
-            transform: scale(0.85);
-            transition: transform 0.3s ease;
+            box-shadow: 0 0 80px rgba(255, 234, 87, 0.3);
+            transform: scale(0.7);
+            transition: transform 0.5s ease;
         }
 
         .modal-overlay.active .modal-card {
@@ -86,54 +86,57 @@
 
         .modal-card h2 {
             font-family: 'Dancing Script', cursive;
-            font-size: 48px;
-            color: #ffb3b3;
-            margin-bottom: 12px;
+            font-size: 64px;
+            color: #fff3b0;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 243, 176, 0.7);
         }
 
         .modal-card p {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #eee;
-            margin-bottom: 12px;
+            font-size: 18px;
+            line-height: 1.9;
+            color: #ffe066;
+            margin-bottom: 20px;
         }
 
         .modal-card .highlight-msg {
-            color: #ff9999;
-            font-weight: 600;
-            margin: 18px 0;
+            color: #ffea57;
+            font-weight: 700;
+            font-size: 22px;
+            margin: 30px 0;
         }
 
         .close-btn {
-            background-color: #ff3333;
-            color: white;
+            background-color: #ffea57;
+            color: #544400;
             border: none;
-            padding: 8px 30px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 20px;
+            padding: 15px 45px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 40px;
             cursor: pointer;
-            transition: background 0.2s, transform 0.2s;
-            box-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 25px rgba(255, 234, 87, 0.6);
         }
 
         .close-btn:hover {
-            background-color: #e60000;
-            transform: scale(1.05);
+            background-color: #fff3b0;
+            transform: translateY(-5px);
+            box-shadow: 0 0 40px rgba(255, 234, 87, 0.8);
         }
     </style>
 </head>
 <body>
 
     <div id="canvas-container"></div>
-    <div class="instruction">Desliza para moverte por la galaxia 3D • Haz clic en el planeta central</div>
+    <div class="instruction">EXPLORA LA GALAXIA FLORAL • HAZ CLIC EN EL PLANETA CENTRAL</div>
 
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-card">
-            <h2>Mi Amor...</h2>
+            <h2>Mi Galaxia</h2>
             <p>Eres la coincidencia más hermosa que me pudo pasar.</p>
-            <p>Así como esta galaxia de ramos ilumina la inmensidad, tu sonrisa ilumina cada uno de mis días.</p>
-            <p class="highlight-msg">¡Feliz Día de las Flores Amarillas, Mi Amor!<br>Te amo infinitamente.</p>
+            <p>Así como esta galaxia de ramos ilumina la inmensidad, tu presencia ilumina cada uno de mis días y llena mi universo de color.</p>
+            <p class="highlight-msg">¡Feliz Día de las Flores Amarillas, Mi Amor!<br>Te quiero infinito.</p>
             <button class="close-btn" id="closeModalBtn">Cerrar</button>
         </div>
     </div>
@@ -141,183 +144,156 @@
     <script>
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x000000, 0.010);
+        scene.fog = new THREE.FogExp2(0x000000, 0.013);
 
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 10, 28);
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 9, 30);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
+        controls.dampingFactor = 0.07;
         controls.maxDistance = 60;
-        controls.minDistance = 3;
+        controls.minDistance = 5;
 
-        // Luz ambiental suave
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+        // Luz ambiental
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
         scene.add(ambientLight);
 
-        // Grupo central (Planeta tipo Agujero Negro con Anillo Luminoso Amarillo/Dorado)
+        // Planeta Central con Aro Brillante
         const centralGroup = new THREE.Group();
         scene.add(centralGroup);
 
-        const planetGeometry = new THREE.SphereGeometry(2.2, 32, 32);
-        const planetMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const planetGeometry = new THREE.SphereGeometry(2.8, 64, 64);
+        const planetMaterial = new THREE.MeshStandardMaterial({
+            color: 0x050505,
+            emissive: 0xff6666,
+            emissiveIntensity: 0.6,
+            roughness: 0.2,
+            metalness: 0.8
+        });
         const centralPlanet = new THREE.Mesh(planetGeometry, planetMaterial);
         centralGroup.add(centralPlanet);
 
-        // Anillo brillante central
-        const ringGeometry = new THREE.RingGeometry(2.5, 4.2, 64);
-        ringGeometry.rotateX(Math.PI / 2.2);
+        const ringGeometry = new THREE.RingGeometry(3.5, 5.5, 128);
+        ringGeometry.rotateX(Math.PI / 2.3);
         const ringMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffcc00,
+            color: 0xffd700,
             side: THREE.DoubleSide,
             transparent: true,
-            opacity: 0.9
+            opacity: 0.85
         });
         const planetRing = new THREE.Mesh(ringGeometry, ringMaterial);
         centralGroup.add(planetRing);
 
-        // Esplendor/Corona alrededor del núcleo
-        const glowGeometry = new THREE.SphereGeometry(2.6, 32, 32);
+        // Esplendor alrededor del núcleo
+        const glowGeometry = new THREE.SphereGeometry(3.3, 32, 32);
         const glowMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffaa00,
+            color: 0xff9933,
             transparent: true,
-            opacity: 0.35,
+            opacity: 0.25,
             side: THREE.BackSide
         });
         const coreGlow = new THREE.Mesh(glowGeometry, glowMaterial);
         centralGroup.add(coreGlow);
 
-        // Generador dinámico para limpiar el fondo cuadrado de la imagen y dejarla redonda y limpia
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.crossOrigin = "anonymous";
-        
-        const galaxyGroup = new THREE.Group();
-        scene.add(galaxyGroup);
-
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=256&q=80';
-        
-        img.onload = () => {
+        // Generador de Ramos Variados Estilizados 3D (Tulipanes, Girasoles, Ramos Mixtos)
+        function createFloralTexture(type) {
             const canvas = document.createElement('canvas');
             canvas.width = 256;
             canvas.height = 256;
             const ctx = canvas.getContext('2d');
 
-            // Crear máscara circular perfecta para eliminar bordes cuadrados
-            ctx.beginPath();
-            ctx.arc(128, 128, 120, 0, Math.PI * 2);
-            ctx.clip();
-            ctx.drawImage(img, 0, 0, 256, 256);
+            // Fondo transparente
+            ctx.clearRect(0, 0, 256, 256);
 
-            // Añadir un borde dorado elegante al ramo
-            ctx.strokeStyle = '#ffea57';
-            ctx.lineWidth = 8;
-            ctx.beginPath();
-            ctx.arc(128, 128, 116, 0, Math.PI * 2);
-            ctx.stroke();
+            // Dibujar base de ramo
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#ffcc00';
 
-            const circularTexture = new THREE.CanvasTexture(canvas);
-            const bouquetMaterial = new THREE.SpriteMaterial({ 
-                map: circularTexture, 
-                transparent: true
-            });
-
-            // Distribuir ramos en espiral galáctica limpia
-            const totalBouquets = 45;
-            for (let i = 0; i < totalBouquets; i++) {
-                const angle = i * 0.4;
-                const radius = 5 + (i * 0.35);
-                const x = Math.cos(angle) * radius;
-                const z = Math.sin(angle) * radius;
-                const y = (Math.random() - 0.5) * 5;
-
-                const sprite = new THREE.Sprite(bouquetMaterial);
-                sprite.scale.set(2.6, 2.6, 1);
-                sprite.position.set(x, y, z);
-                galaxyGroup.add(sprite);
+            if (type === 'girasol') {
+                // Girasol estilizado
+                // Pétalos
+                ctx.fillStyle = '#ffea57';
+                for (let i = 0; i < 16; i++) {
+                    const angle = (i / 16) * Math.PI * 2;
+                    ctx.beginPath();
+                    ctx.ellipse(128 + Math.cos(angle) * 70, 128 + Math.sin(angle) * 70, 60, 20, angle, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                // Centro
+                ctx.fillStyle = '#544400';
+                ctx.beginPath();
+                ctx.arc(128, 128, 55, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (type === 'tulipan') {
+                // Tulipán estilizado (rosa suave/amarillo)
+                ctx.fillStyle = '#fff3b0';
+                ctx.beginPath();
+                ctx.moveTo(128, 30);
+                ctx.bezierCurveTo(170, 50, 170, 110, 128, 130);
+                ctx.bezierCurveTo(86, 110, 86, 50, 128, 30);
+                ctx.fill();
+                // Detalle interno
+                ctx.fillStyle = '#ffea57';
+                ctx.beginPath();
+                ctx.ellipse(128, 90, 20, 40, 0, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Ramo Mixto (círculos de flores variadas doradas/rosas)
+                for (let i = 0; i < 15; i++) {
+                    const angle = (i / 15) * Math.PI * 2;
+                    const r = 15 + Math.random() * 35;
+                    const color = Math.random() > 0.5 ? '#ffea57' : '#fff3b0';
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.arc(128 + Math.cos(angle) * r, 128 + Math.sin(angle) * r, 25, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
-        };
 
-        // Estrellas de fondo circulares y brillantes
-        function createDotTexture(color) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 32;
-            canvas.height = 32;
-            const ctx = canvas.getContext('2d');
-            const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-            gradient.addColorStop(0, color);
-            gradient.addColorStop(0.4, color);
-            gradient.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(16, 16, 16, 0, Math.PI * 2);
-            ctx.fill();
             return new THREE.CanvasTexture(canvas);
         }
 
-        const yellowStarsGeo = new THREE.BufferGeometry();
-        const count = 1800;
-        const positions = new Float32Array(count * 3);
-        for(let i = 0; i < count * 3; i += 3) {
-            positions[i] = (Math.random() - 0.5) * 160;
-            positions[i+1] = (Math.random() - 0.5) * 160;
-            positions[i+2] = (Math.random() - 0.5) * 160;
-        }
-        yellowStarsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        scene.add(new THREE.Points(yellowStarsGeo, new THREE.PointsMaterial({ 
-            color: 0xffea57, 
-            size: 1.5, 
-            map: createDotTexture('#ffea57'), 
-            transparent: true, 
-            opacity: 0.9, 
-            depthWrite: false 
-        })));
+        const textures = ['girasol', 'tulipan', 'mixto'].map(createFloralTexture);
+        const materials = textures.map(texture => new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.98, depthWrite: false }));
 
-        // Palabras flotantes románticas
-        const words = [
-            "Mi sol", "Te amo", "Eternidad", "Mi vida", "Preciosa", "Sonrisa", 
-            "Luz", "Amor", "Destino", "Felicidad", "Mi flor", "Siempre juntos"
-        ];
+        // Galaxia de Ramos Variados
+        const galaxyGroup = new THREE.Group();
+        scene.add(galaxyGroup);
 
-        function createTextSprite(text) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 256;
-            canvas.height = 64;
-            const context = canvas.getContext('2d');
-            context.font = 'bold 20px Poppins, sans-serif';
-            context.fillStyle = '#fff3b0';
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            context.shadowColor = '#ffcc00';
-            context.shadowBlur = 10;
-            context.fillText(text, 128, 32);
-
-            const texture = new THREE.CanvasTexture(canvas);
-            const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
-            const sprite = new THREE.Sprite(material);
-            sprite.scale.set(3.8, 1, 1);
-            return sprite;
-        }
-
-        for(let i = 0; i < 20; i++) {
-            const angle = (i / 20) * Math.PI * 2;
-            const radius = 6 + Math.random() * 12;
+        const totalBouquets = 75;
+        for (let i = 0; i < totalBouquets; i++) {
+            const angle = i * 0.35;
+            const radius = 8 + (i * 0.3);
             const x = Math.cos(angle) * radius;
             const z = Math.sin(angle) * radius;
-            const y = (Math.random() - 0.5) * 5;
+            const y = (Math.random() - 0.5) * 8;
 
-            const word = words[Math.floor(Math.random() * words.length)];
-            const sprite = createTextSprite(word);
+            const materialIndex = Math.floor(Math.random() * materials.length);
+            const sprite = new THREE.Sprite(materials[materialIndex]);
+            const scale = 5.0 + Math.random() * 3.0;
+            sprite.scale.set(scale, scale, 1);
             sprite.position.set(x, y, z);
             galaxyGroup.add(sprite);
         }
+
+        // Estrellas de fondo (puntos amarillos/dorados)
+        const starsGeometry = new THREE.BufferGeometry();
+        const starCount = 2500;
+        const positions = new Float32Array(starCount * 3);
+        for(let i = 0; i < starCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 300;
+            positions[i+1] = (Math.random() - 0.5) * 300;
+            positions[i+2] = (Math.random() - 0.5) * 300;
+        }
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const starsMaterial = new THREE.PointsMaterial({ color: 0xffea57, size: 1.8, transparent: true, opacity: 0.85, depthWrite: false });
+        scene.add(new THREE.Points(starsGeometry, starsMaterial));
 
         // Interacción del modal
         const raycaster = new THREE.Raycaster();
@@ -341,15 +317,15 @@
             if (e.target === modalOverlay) modalOverlay.classList.remove('active');
         });
 
-        // Animación fluida
+        // Animación
         const clock = new THREE.Clock();
         function animate() {
             requestAnimationFrame(animate);
             const elapsedTime = clock.getElapsedTime();
 
-            galaxyGroup.rotation.y = elapsedTime * 0.03;
-            centralGroup.rotation.y = elapsedTime * 0.06;
-            planetRing.rotation.z = elapsedTime * 0.04;
+            galaxyGroup.rotation.y = elapsedTime * 0.04;
+            centralGroup.rotation.y = elapsedTime * 0.07;
+            planetRing.rotation.z = elapsedTime * 0.05;
 
             controls.update();
             renderer.render(scene, camera);
